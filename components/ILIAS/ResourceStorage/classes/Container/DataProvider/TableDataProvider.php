@@ -84,7 +84,6 @@ final class TableDataProvider
             };
         });
 
-        // Currently no sorting is implemented
         return $entries_at_current_level;
     }
 

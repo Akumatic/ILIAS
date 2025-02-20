@@ -203,7 +203,15 @@ class RequestToDataTable implements RequestToComponents, DataRetrieval
 
         $regex_storage = [];
 
-        foreach ($this->data_provider->getEntries() as $entry) {
+        $entries = $this->data_provider->getEntries();
+        // cut entries
+        $entries = array_slice(
+            $entries,
+            $range->getStart(),
+            $range->getLength()
+        );
+
+        foreach ($entries as $entry) {
             $is_dir = $entry instanceof Dir;
             $path_inside_zip = $entry->getPathInsideZIP();
 
