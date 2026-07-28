@@ -279,10 +279,10 @@ class ilECSCmsCourseMemberCommandQueueHandler implements ilECSCommandQueueHandle
             return false;
         }
 
-        $course_id = (int) $course_member->lectureID;
+        $course_id = $course_member->lectureID;
         $usr_ids = ilECSCourseMemberAssignment::lookupUserIds(
             $course_id,
-            is_null($sub_id) ? $sub_id : (int) $sub_id,
+            $sub_id,
             $obj_id
         );
         $this->log->debug('Current coursemember assignments:');
@@ -291,7 +291,7 @@ class ilECSCmsCourseMemberCommandQueueHandler implements ilECSCommandQueueHandle
         // Delete remote deleted
         foreach ($usr_ids as $usr_id) {
             if (!isset($assigned[$usr_id])) {
-                $ass = ilECSCourseMemberAssignment::lookupAssignment($course_id, is_null($sub_id) ? $sub_id : (int) $sub_id, $obj_id, $usr_id);
+                $ass = ilECSCourseMemberAssignment::lookupAssignment($course_id, $sub_id, $obj_id, $usr_id);
                 if ($ass instanceof ilECSCourseMemberAssignment) {
                     $login = ilObjUser::_checkExternalAuthAccount(
                         $this->mapping->getAuthMode(),
@@ -374,7 +374,7 @@ class ilECSCmsCourseMemberCommandQueueHandler implements ilECSCommandQueueHandle
                 $assignment->setServer($this->getServer()->getServerId());
                 $assignment->setMid($this->mid);
                 $assignment->setCmsId($course_id);
-                $assignment->setCmsSubId(is_null($sub_id) ? $sub_id : (int) $sub_id);
+                $assignment->setCmsSubId($sub_id);
                 $assignment->setObjId($obj_id);
                 $assignment->setUid((string) $person_id);
                 $assignment->save();

@@ -30,8 +30,8 @@ class ilECSCourseMemberAssignment
     private int $id;
     private int $server;
     private int $mid;
-    private int $cms_id;
-    private ?int $cms_sub_id = null;
+    private string $cms_id;
+    private ?string $cms_sub_id = null;
     private int $obj_id;
     private string $uid;
     private bool $status = false;
@@ -106,20 +106,20 @@ class ilECSCourseMemberAssignment
     /**
      * Lookup user ids
      */
-    public static function lookupUserIds(int $a_cms_id, ?int $a_cms_sub_id, int $a_obj_id): array
+    public static function lookupUserIds(string $a_cms_id, ?string $a_cms_sub_id, int $a_obj_id): array
     {
         global $DIC;
 
         $ilDB = $DIC['ilDB'];
 
         if (is_null($a_cms_sub_id)) {
-            $cms_sub_id_query = 'AND (cms_sub_id IS NULL OR cms_sub_id = 0) ';
+            $cms_sub_id_query = 'AND (cms_sub_id IS NULL OR cms_sub_id = "0") ';
         } else {
-            $cms_sub_id_query = 'AND cms_sub_id = ' . $ilDB->quote($a_cms_sub_id, 'integer') . ' ';
+            $cms_sub_id_query = 'AND cms_sub_id = ' . $ilDB->quote($a_cms_sub_id, 'text') . ' ';
         }
 
         $query = 'SELECT usr_id FROM ecs_course_assignments ' .
-                'WHERE cms_id = ' . $ilDB->quote($a_cms_id, 'integer') . ' ' .
+                'WHERE cms_id = ' . $ilDB->quote($a_cms_id, 'text') . ' ' .
                 $cms_sub_id_query .
                 'AND obj_id = ' . $ilDB->quote($a_obj_id, 'integer');
         $res = $ilDB->query($query);
@@ -134,20 +134,20 @@ class ilECSCourseMemberAssignment
     /**
      * Lookup assignment of user
      */
-    public static function lookupAssignment(int $a_cms_id, ?int $a_cms_sub_id, int $a_obj_id, string $a_usr_id): ?ilECSCourseMemberAssignment
+    public static function lookupAssignment(string $a_cms_id, ?string $a_cms_sub_id, int $a_obj_id, string $a_usr_id): ?ilECSCourseMemberAssignment
     {
         global $DIC;
 
         $ilDB = $DIC['ilDB'];
 
         if (is_null($a_cms_sub_id)) {
-            $cms_sub_id_query = 'AND (cms_sub_id IS NULL OR cms_sub_id = 0) ';
+            $cms_sub_id_query = 'AND (cms_sub_id IS NULL OR cms_sub_id = "0") ';
         } else {
-            $cms_sub_id_query = 'AND cms_sub_id = ' . $ilDB->quote($a_cms_sub_id, 'integer') . ' ';
+            $cms_sub_id_query = 'AND cms_sub_id = ' . $ilDB->quote($a_cms_sub_id, 'text') . ' ';
         }
 
         $query = 'SELECT id FROM ecs_course_assignments ' .
-                'WHERE cms_id = ' . $ilDB->quote($a_cms_id, 'integer') . ' ' .
+                'WHERE cms_id = ' . $ilDB->quote($a_cms_id, 'text') . ' ' .
                 $cms_sub_id_query .
                 'AND obj_id = ' . $ilDB->quote($a_obj_id, 'integer') . ' ' .
                 'AND usr_id = ' . $ilDB->quote($a_usr_id, 'text');
@@ -190,22 +190,22 @@ class ilECSCourseMemberAssignment
         return $this->mid;
     }
 
-    public function setCmsId(int $a_id): void
+    public function setCmsId(string $a_id): void
     {
         $this->cms_id = $a_id;
     }
 
-    public function getCmsId(): int
+    public function getCmsId(): string
     {
         return $this->cms_id;
     }
 
-    public function setCmsSubId(?int $a_id): void
+    public function setCmsSubId(?string $a_id): void
     {
         $this->cms_sub_id = $a_id;
     }
 
-    public function getCmsSubId(): ?int
+    public function getCmsSubId(): ?string
     {
         return $this->cms_sub_id;
     }
@@ -246,8 +246,8 @@ class ilECSCourseMemberAssignment
             'id' => ['integer', $this->getId()],
             'sid' => ['integer', $this->getServer()],
             'mid' => ['integer', $this->getMid()],
-            'cms_id' => ['integer', $this->getCmsId()],
-            'cms_sub_id' => ['integer', $this->getCmsSubId()],
+            'cms_id' => ['text', $this->getCmsId()],
+            'cms_sub_id' => ['text', $this->getCmsSubId()],
             'obj_id' => ['integer', $this->getObjId()],
             'usr_id' => ['text', $this->getUid()],
             'status' => ['integer', $this->getStatus()],
@@ -317,8 +317,8 @@ class ilECSCourseMemberAssignment
         $row = $this->db->fetchObject($r);
         $this->setServer((int) $row->sid);
         $this->setMid((int) $row->mid);
-        $this->setCmsId((int) $row->cms_id);
-        $this->setCmsSubId((int) $row->cms_sub_id);
+        $this->setCmsId($row->cms_id);
+        $this->setCmsSubId($row->cms_sub_id);
         $this->setObjId((int) $row->obj_id);
         $this->setUid($row->usr_id);
         $this->setStatus((bool) $row->status);
