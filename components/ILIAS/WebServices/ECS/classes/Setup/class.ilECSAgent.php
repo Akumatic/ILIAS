@@ -32,6 +32,9 @@ class ilECSAgent extends Setup\Agent\NullAgent
             ),
             new \ilDatabaseUpdateStepsExecutedObjective(
                 new ilECSUpdateSteps9()
+            ),
+            new \ilDatabaseUpdateStepsExecutedObjective(
+                new ilECSUpdateSteps10()
             )
         );
     }
@@ -43,7 +46,8 @@ class ilECSAgent extends Setup\Agent\NullAgent
             true,
             new ilDatabaseUpdateStepsMetricsCollectedObjective($storage, new ilECSDBUpdateSteps()),
             new ilDatabaseUpdateStepsMetricsCollectedObjective($storage, new ilECSUpdateSteps8()),
-            new ilDatabaseUpdateStepsMetricsCollectedObjective($storage, new ilECSUpdateSteps9())
+            new ilDatabaseUpdateStepsMetricsCollectedObjective($storage, new ilECSUpdateSteps9()),
+            new ilDatabaseUpdateStepsMetricsCollectedObjective($storage, new ilECSUpdateSteps10())
         );
     }
 }
